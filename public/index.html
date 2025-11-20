@@ -1,162 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Chat Point | Food Shops</title>
+  <title>ChatPoint • Sindagi Food Delivery</title>
   
-  <!-- PWA Manifest & Icons -->
+  <!-- PWA -->
   <link rel="manifest" href="/manifest.json" />
   <link rel="icon" href="/icons/icon-192.png" type="image/png" />
   <meta name="theme-color" content="#59FF94" />
   
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
 
   <style>
     :root {
-      --bg: #0e0e0e;
+      --bg: #0a0a0a;
       --card: #1a1a1a;
       --text: #e8ffe9;
       --accent: #59ff94;
-      --radius: 18px;
       --border: rgba(89, 255, 148, 0.25);
       --glow: rgba(89, 255, 148, 0.35);
+      --radius: 20px;
     }
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: "Outfit", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; position: relative; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--text); min-height:100dvh; overflow-x:hidden; }
     
-    .floating-icons { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
-    .icon { position: absolute; font-size: 52px; color: var(--accent); opacity: 0.12; animation: float 12s infinite ease-in-out; }
-    .icon:nth-child(1) { top: 10%; left: 5%; animation-duration: 14s; }
-    .icon:nth-child(2) { top: 70%; left: 80%; animation-duration: 18s; }
-    .icon:nth-child(3) { top: 40%; left: 50%; animation-duration: 16s; }
-    .icon:nth-child(4) { top: 80%; left: 20%; animation-duration: 20s; }
-    @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-25px) rotate(10deg); } }
+    /* Floating Icons */
+    .floating { position:fixed; inset:0; pointer-events:none; z-index:0; }
+    .floating i { position:absolute; font-size:48px; color:var(--accent); opacity:0.12; animation:float 15s infinite linear; }
+    .floating i:nth-child(1) { top:10%; left:8%; animation-duration:18s; }
+    .floating i:nth-child(2) { top:65%; left:75%; animation-duration:22s; }
+    .floating i:nth-child(3) { top:35%; left:45%; animation-duration:16s; }
+    .floating i:nth-child(4) { top:80%; left:15%; animation-duration:20s; }
+    @keyframes float { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-30px) rotate(12deg); } }
 
-    header { padding: 16px 20px; background: #111; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 200; border-bottom: 1px solid var(--border); }
-    .brand { font-size: 26px; font-weight: 800; }
-    .brand span { color: var(--accent); }
-    .nav-btn { font-size: 24px; cursor: pointer; padding: 10px; border-radius: 50%; background: #1a1a1a; transition: 0.3s; border: 1px solid var(--border); }
-    .nav-btn:hover { background: var(--accent); color: black; }
+    header { padding:16px 20px; background:#111; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:100; border-bottom:1px solid var(--border); }
+    .brand { font-size:28px; font-weight:800; }
+    .brand span { color:var(--accent); }
+    .menu-btn { font-size:26px; cursor:pointer; padding:10px; border-radius:50%; background:#222; border:1px solid var(--border); transition:0.3s; }
+    .menu-btn:hover { background:var(--accent); color:#000; }
 
-    .sidebar { position: fixed; top: 0; left: -100%; width: 280px; height: 100%; background: #111; padding: 20px; transition: 0.35s; border-right: 1px solid var(--border); z-index: 300; }
-    .sidebar.active { left: 0; }
-    .profile-section { padding: 16px; background: #1b1b1b; border-radius: 12px; text-align: center; border: 1px solid var(--border); margin-bottom: 20px; }
-    .sidebar a { color: #ddd; text-decoration: none; display: block; padding: 12px; border-radius: 12px; margin-top: 10px; transition: 0.3s; }
-    .sidebar a:hover { background: var(--accent); color: black; }
+    /* Sidebar */
+    .sidebar { position:fixed; top:0; left:-100%; width:280px; height:100dvh; background:#111; padding:20px; transition:0.35s; z-index:200; border-right:1px solid var(--border); overflow-y:auto; }
+    .sidebar.active { left:0; }
+    .profile { padding:18px; background:#1e1e1e; border-radius:14px; text-align:center; border:1px solid var(--border); margin-bottom:20px; }
+    .sidebar a { display:block; padding:14px 16px; margin:8px 0; border-radius:12px; color:#ddd; text-decoration:none; font-weight:600; transition:0.3s; }
+    .sidebar a:hover { background:var(--accent); color:#000; }
+    .logout { color:#ff6b6b !important; }
 
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: none; z-index: 250; }
-    .overlay.active { display: block; }
+    .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); display:none; z-index:150; }
+    .overlay.active { display:block; }
 
-    main { padding: 20px; }
-    .offer-slider { max-width: 540px; margin: 0 auto 24px; border-radius: 18px; overflow: hidden; position: relative; box-shadow: 0 8px 25px rgba(0,0,0,0.6); border: 1px solid var(--border); }
-    .slides { display: flex; width: 400%; animation: slide 16s infinite; }
-    .slide { width: 100%; height: 180px; background-size: cover; background-position: center; position: relative; display: flex; align-items: center; justify-content: center; color: white; text-align: center; padding: 20px; font-weight: 800; font-size: 24px; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
-    .slide::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(89,255,148,0.4), rgba(255,50,99,0.5)); }
-    .slide span { position: relative; z-index: 2; background: rgba(0,0,0,0.5); padding: 12px 24px; border-radius: 16px; backdrop-filter: blur(5px); }
-    @keyframes slide { 0%,22%{transform:translateX(0%)} 25%,47%{transform:translateX(-25%)} 50%,72%{transform:translateX(-50%)} 75%,97%{transform:translateX(-75%)} 100%{transform:translateX(0%)} }
+    main { padding:20px; position:relative; z-index:1; }
+    
+    /* Offer Slider */
+    .offers { max-width:560px; margin:0 auto 28px; border-radius:var(--radius); overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.6); border:1px solid var(--border); }
+    .slides { display:flex; width:400%; animation:slide 18s infinite; }
+    .slide { width:100%; height:190px; background-size:cover; background-position:center; position:relative; display:flex; align-items:center; justify-content:center; text-align:center; }
+    .slide::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(89,255,148,0.5), rgba(255,50,99,0.5)); }
+    .slide span { position:relative; z-index:2; background:rgba(0,0,0,0.6); padding:14px 28px; border-radius:18px; font-size:22px; font-weight:800; backdrop-filter:blur(6px); }
+    @keyframes slide { 0%,22%{transform:translateX(0)} 25%,47%{transform:translateX(-25%)} 50%,72%{transform:translateX(-50%)} 75%,97%{transform:translateX(-75%)} 100%{transform:translateX(0)} }
 
-    .search-bar { max-width: 540px; margin: 0 auto 26px; position: relative; }
-    .search-bar input { width: 100%; padding: 16px 50px 16px 20px; border: 1px solid var(--border); border-radius: 50px; background: #1a1a1a; color: var(--text); font-size: 16px; }
-    .search-bar input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 15px var(--glow); }
-    .search-bar i { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); color: var(--accent); font-size: 18px; pointer-events: none; }
+    /* Search */
+    .search { max-width:560px; margin:0 auto 28px; position:relative; }
+    .search input { width:100%; padding:16px 56px 16px 22px; background:#1e1e1e; border:1px solid var(--border); border-radius:50px; color:var(--text); font-size:16px; }
+    .search input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 20px var(--glow); }
+    .search i { position:absolute; right:20px; top:50%; transform:translateY(-50%); color:var(--accent); font-size:20px; }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-    .card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; cursor: pointer; transition: 0.4s; }
-    .card:hover { transform: translateY(-8px); box-shadow: 0 0 25px var(--glow); }
-    .card img { width: 100%; height: 180px; object-fit: cover; }
-    .info { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-    .shop-name { color: var(--accent); font-weight: 700; font-size: 18px; }
-    .rating { color: #72ffbc; font-weight: 700; }
-    .desc { padding: 0 16px 16px; font-size: 14px; opacity: 0.8; }
+    /* Grid */
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:22px; max-width:1200px; margin:0 auto; }
+    .card { background:var(--card); border-radius:var(--radius); overflow:hidden; border:1px solid var(--border); cursor:pointer; transition:0.4s; }
+    .card:hover { transform:translateY(-10px); box-shadow:0 0 30px var(--glow); }
+    .card img { width:100%; height:190px; object-fit:cover; background:#333; }
+    .info { padding:16px; display:flex; justify-content:space-between; align-items:center; }
+    .shop-name { font-size:19px; font-weight:700; color:var(--accent); }
+    .rating { font-weight:700; color:#72ffbc; }
+    .desc { padding:0 16px 18px; font-size:14.5px; opacity:0.85; line-height:1.4; }
 
-    footer { padding: 18px; text-align: center; color: #999; background: #111; margin-top: 40px; border-top: 1px solid var(--border); }
+    footer { padding:20px; text-align:center; font-size:14px; color:#777; margin-top:50px; border-top:1px solid var(--border); }
   </style>
 </head>
 <body>
-  <div class="floating-icons">
-    <i class="fas fa-pizza-slice icon"></i>
-    <i class="fas fa-hamburger icon"></i>
-    <i class="fas fa-ice-cream icon"></i>
-    <i class="fas fa-mug-hot icon"></i>
+
+  <!-- Floating Background Icons -->
+  <div class="floating">
+    <i class="fas fa-pizza-slice"></i>
+    <i class="fas fa-hamburger"></i>
+    <i class="fas fa-ice-cream"></i>
+    <i class="fas fa-mug-hot"></i>
   </div>
 
   <header>
-    <div class="nav-btn" id="navBtn"><i class="fas fa-bars"></i></div>
+    <div class="menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
     <div class="brand"><span>Chat</span>Point</div>
+    <div style="width:40px;"></div>
   </header>
 
+  <!-- Sidebar -->
   <div class="sidebar" id="sidebar">
-    <div class="profile-section" id="profileSection"></div>
-    <a href="/orders.html">My Orders</a>
-    <a href="tel:8088975913">Contact: 8088975913</a>
-    <a href="#" id="logout" style="display:none;color:#ff6b6b">Logout</a>
+    <div class="profile" id="profileSection">
+      <i class="fas fa-user-circle" style="font-size:48px;color:#888;"></i>
+      <div style="margin-top:12px;">
+        <a href="/login.html" style="color:var(--accent);font-weight:700;text-decoration:underline;">Login / Signup</a>
+      </div>
+    </div>
+    <a href="/orders.html"><i class="fas fa-shopping-bag"></i> My Orders</a>
+    <a href="tel:8088975913"><i class="fas fa-phone"></i> Call: 8088975913</a>
+    <a href="#" id="logoutBtn" class="logout" style="display:none;"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
   <div class="overlay" id="overlay"></div>
 
   <main>
-    <div class="offer-slider">
+    <!-- Offers -->
+    <div class="offers">
       <div class="slides">
-        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800');"><span>FREE DELIVERY On Order above 50!</span></div>
-        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1606787366850-de6330127bfc?w=800');"><span>NEW: Chat Point Special Combo - Only ₹200</span></div>
-        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a0ae38?w=800');"><span>Order above 200 Get coco-cola free</span></div>
-        <div class="slide" style="background-image: url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800');"><span>Buy 1 Get 1 FREE at FLY PIZZA !</span></div>
+        <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=1200')">
+          <span>FREE Delivery on Orders Above ₹50!</span>
+        </div>
+        <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1606787366850-de6330127bfc?w=1200')">
+          <span>ChatPoint Special Combo – Only ₹199</span>
+        </div>
+        <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1513104890138-7c749659a0ae?w=1200')">
+          <span>Order ₹200+ → Get FREE Coke!</span>
+        </div>
+        <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200')">
+          <span>BUY 1 GET 1 FREE at Fly Pizza!</span>
+        </div>
       </div>
     </div>
 
-    <div class="search-bar">
-      <input type="text" id="searchInput" placeholder="Search your favorite shop..." oninput="searchShops()">
+    <!-- Search -->
+    <div class="search">
+      <input type="text" id="searchInput" placeholder="Search your favorite shop or food..." oninput="filterShops()">
       <i class="fas fa-search"></i>
     </div>
 
-    <div class="grid" id="grid"></div>
+    <!-- Shops Grid -->
+    <div class="grid" id="shopsGrid"></div>
   </main>
 
-  <footer>© 2025 Chat Point • Made with Passion</footer>
+  <footer>© 2025 ChatPoint Sindagi • Made with ❤️ for Food Lovers</footer>
 
   <script>
     const shops = [
       { name: "Chat Point", img: "/images/dolphin.png", rating: 4.9, desc: "Your favorite hangout – burgers, chats, coffee & vibes!" },
-      { name: "Sangambar Udpi-Hotel", img: "/images/sangambar-udpi-hotel.png", rating: 4.6, desc: "Pure vegetarian South Indian meals." },
-      { name: "Nandi Grand Hotels", img: "/images/nandini-grand-hotels.png", rating: 4.7, desc: "Crispy dosas with authentic flavors." },
-      { name: "Pizza spot", img: "/images/Pizza-Spot-Special.jpg", rating: 4.5, desc: "Loaded pizzas with fresh toppings." },
-      { name: "Fly Pizza", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=500", rating: 4.6, desc: "100% veg pizzas, light & tasty." },
-      { name: "Mister Chef", img: "/mister-chef.png", rating: 4.7, desc: "Juicy burgers with secret sauce." },
-      { name: "Dolphin Hotel", img: "/images/Tandoori-Paneer.jpg", rating: 4.5, desc: "Fresh sandwiches & healthy bites." },
-      { name: "Hassanmba iyyangar bakery", img: "/images/bekary.png", rating: 4.5, desc: "Fresh baked goods & snacks." }
+      { name: "Sangambar Udpi-Hotel", img: "/images/sangambar-udpi-hotel.png", rating: 4.6, desc: "Pure vegetarian South Indian meals & crispy dosas." },
+      { name: "Nandi Grand Hotels", img: "/images/nandini-grand-hotels.png", rating: 4.7, desc: "Authentic South Indian thali & filter coffee." },
+      { name: "Pizza Spot", img: "/images/Pizza-Spot-Special.jpg", rating: 4.5, desc: "Loaded pizzas with fresh toppings & cheese burst." },
+      { name: "Fly Pizza", img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600", rating: 4.6, desc: "100% veg pizzas – light, tasty & fast delivery." },
+      { name: "Mister Chef", img: "/images/mister-chef.png", rating: 4.7, desc: "Juicy burgers with secret sauce & crispy fries." },
+      { name: "Dolphin Hotel", img: "/images/Tandoori-Paneer.jpg", rating: 4.5, desc: "Fresh sandwiches, rolls & healthy bites." },
+      { name: "Hassanmba Iyyangar Bakery", img: "/images/bekary.png", rating: 4.5, desc: "Fresh cakes, puffs, khara & sweet biscuits." }
     ];
 
     function renderShops(filter = "") {
-      const grid = document.getElementById("grid");
-      grid.innerHTML = "";
-      shops
-        .filter(shop => shop.name.toLowerCase().includes(filter.toLowerCase()))
-        .forEach(shop => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.onclick = () => {
-            localStorage.setItem("currentShop", JSON.stringify(shop));
-            location.href = `/items.html?shop=${encodeURIComponent(shop.name)}`;
-          };
-          card.innerHTML = `
-            <img src="${shop.img}" alt="${shop.name}" onerror="this.src='https://via.placeholder.com/300x180?text=${encodeURIComponent(shop.name)}'">
-            <div class="info">
-              <div class="shop-name">${shop.name}</div>
-              <div class="rating"><i class="fas fa-star"></i> ${shop.rating}</div>
-            </div>
-            <div class="desc">${shop.desc}</div>
-          `;
-          grid.appendChild(card);
-        });
+      const grid = document.getElementById("shopsGrid");
+      const filtered = shops.filter(s => s.name.toLowerCase().includes(filter.toLowerCase()) || s.desc.toLowerCase().includes(filter.toLowerCase()));
+      grid.innerHTML = filtered.map(shop => `
+        <div class="card" onclick='goToShop("${shop.name}")'>
+          <img src="${shop.img}" alt="${shop.name}" onerror="this.src='https://via.placeholder.com/300x190/1a1a1a/59ff94?text=${encodeURIComponent(shop.name)}'">
+          <div class="info">
+            <div class="shop-name">${shop.name}</div>
+            <div class="rating"><i class="fas fa-star"></i> ${shop.rating}</div>
+          </div>
+          <div class="desc">${shop.desc}</div>
+        </div>
+      `).join('');
     }
 
-    function searchShops() {
+    function goToShop(name) {
+      const shop = shops.find(s => s.name === name);
+      localStorage.setItem("currentShop", JSON.stringify(shop));
+      location.href = `/items.html?shop=${encodeURIComponent(name)}`;
+    }
+
+    function filterShops() {
       renderShops(document.getElementById("searchInput").value.trim());
     }
 
-    document.getElementById("navBtn").onclick = () => {
+    // Sidebar
+    document.getElementById("menuBtn").onclick = () => {
       document.getElementById("sidebar").classList.add("active");
       document.getElementById("overlay").classList.add("active");
     };
@@ -165,23 +190,31 @@
       document.getElementById("overlay").classList.remove("active");
     };
 
-    function loadProfile() {
+    // Profile & Logout
+    function updateProfile() {
       const user = JSON.parse(localStorage.getItem("chatpoint_user") || "null");
       const profile = document.getElementById("profileSection");
-      const logoutBtn = document.getElementById("logout");
-      if (user && user._id) {
-        profile.innerHTML = `<i class="fas fa-user-circle" style="font-size:40px;color:var(--accent)"></i><div style="font-weight:700;font-size:18px;">${user.name}</div><div style="font-size:14px;opacity:0.7;">${user.phone}</div>`;
-        logoutBtn.style.display = "block";
-        logoutBtn.onclick = () => { localStorage.removeItem("chatpoint_user"); location.reload(); };
-      } else {
-        profile.innerHTML = `<div style="font-size:15px;"><i class="fas fa-user-circle" style="font-size:40px;color:#888;"></i><br><a href="/login.html" style="color:var(--accent);text-decoration:underline;">Login to see profile</a></div>`;
-        logoutBtn.style.display = "none";
+      const logout = document.getElementById("logoutBtn");
+
+      if (user) {
+        profile.innerHTML = `
+          <i class="fas fa-user-circle" style="font-size:52px;color:var(--accent);"></i>
+          <div style="margin-top:12px;font-weight:700;font-size:19px;">${user.name || "User"}</div>
+          <div style="opacity:0.8;font-size:15px;">${user.phone}</div>
+        `;
+        logout.style.display = "block";
+        logout.onclick = () => {
+          localStorage.removeItem("chatpoint_user");
+          localStorage.removeItem("chatpoint_token");
+          location.reload();
+        };
       }
     }
 
+    // Init
     window.onload = () => {
       renderShops();
-      loadProfile();
+      updateProfile();
     };
   </script>
 </body>
