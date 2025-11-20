@@ -54,7 +54,6 @@
     <svg class="svg-3" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gC"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ff6b35"/></linearGradient></defs><rect x="18" y="18" width="28" height="26" rx="4" stroke="url(#gC)" stroke-width="2.6" fill="none"/><path d="M24 18 Q32 8 40 18" stroke="url(#gC)" stroke-width="2.6" fill="none"/></svg>
     <svg class="svg-4" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gD"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ff6b35"/></linearGradient></defs><rect x="20" y="18" width="24" height="8" rx="3" stroke="url(#gD)" stroke-width="2.4" fill="none"/><rect x="22" y="26" width="3" height="14" fill="url(#gD)"/><rect x="28" y="26" width="3" height="14" fill="url(#gD)"/><rect x="34" y="26" width="3" height="14" fill="url(#gD)"/></svg>
   </div>
-
   <div class="wrap">
     <div class="panel-left"><div class="hero"><h2>ChatPoint</h2><p>Fast, local food delivery — crafted for Sindagi.</p></div></div>
     <div class="card">
@@ -76,7 +75,6 @@
       </div>
     </div>
   </div>
-
   <div id="loadingOverlay"><div class="progress-wrap"><div class="progress-bg"><div class="progress-bar" id="progressBar"></div></div><div id="loadingTimer">0s</div></div></div>
 
   <script>
@@ -95,21 +93,49 @@
     showSignup.onclick = (e) => { e.preventDefault(); loginForm.style.display='none'; signupForm.style.display='block'; };
     showLogin.onclick = (e) => { e.preventDefault(); signupForm.style.display='none'; loginForm.style.display='block'; };
 
-    function showLoading(){ loadingOverlay.style.display='flex'; progressBar.style.width='6%'; let s=0; loadingTimer.textContent='0s'; timerInterval=setInterval(()=>{s++;loadingTimer.textContent=s+'s';progressBar.style.width=Math.min(6+s*9,100)+'%';},800); }
-    function hideLoading(){ clearInterval(timerInterval); progressBar.style.width='100%'; setTimeout(()=>{loadingOverlay.style.display='none';progressBar.style.width='0%';},300); }
+    function showLoading(){
+      loadingOverlay.style.display='flex'; 
+      progressBar.style.width='6%'; 
+      let s=0; 
+      loadingTimer.textContent='0s'; 
+      timerInterval=setInterval(()=>{s++;loadingTimer.textContent=s+'s';progressBar.style.width=Math.min(6+s*9,100)+'%';},800);
+    }
+    function hideLoading(){
+      clearInterval(timerInterval);
+      progressBar.style.width='100%';
+      setTimeout(()=>{loadingOverlay.style.display='none';progressBar.style.width='0%';},300);
+    }
 
     btnLogin.onclick = async () => {
       const phone = document.getElementById('loginPhone').value.trim();
       const pass = document.getElementById('loginPassword').value.trim();
       if (!/^\d{10}$/.test(phone)) return alert('Enter valid 10-digit phone');
       if (phone === '1234567890' && pass === 'admin') { showLoading(); setTimeout(()=>{hideLoading();location.href='delivery.html';},700); return; }
+
       showLoading();
       try {
-        const res = await fetch(`${BASE_URL}/api/user/login`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({phone,password:pass})});
+        const res = await fetch(`${BASE_URL}/api/user/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, password: pass })
+        });
         const data = await res.json();
-        if (data.success) { localStorage.setItem('chatpoint_user', JSON.stringify(data.user)); hideLoading(); location.href='index.html'; }
-        else { hideLoading(); alert(data.message || 'Login failed'); }
-      } catch { hideLoading(); alert('Network error'); }
+
+        if (data.success) {
+          // THIS IS THE ONLY FIX — SAVE TOKEN NOW!
+          localStorage.setItem('chatpoint_token', data.access_token);
+          localStorage.setItem('chatpoint_user', JSON.stringify(data.user));
+          
+          hideLoading();
+          location.href = 'index.html';
+        } else {
+          hideLoading();
+          alert(data.message || 'Login failed');
+        }
+      } catch (err) {
+        hideLoading();
+        alert('Network error');
+      }
     };
 
     btnSignup.onclick = async () => {
@@ -117,16 +143,33 @@
       const phone = document.getElementById('signupPhone').value.trim();
       const pass = document.getElementById('signupPassword').value.trim();
       if (!name || !/^\d{10}$/.test(phone) || !pass) return alert('Fill all fields correctly');
+
       showLoading();
       try {
-        const res = await fetch(`${BASE_URL}/api/user/signup`, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,phone,password:pass})});
+        const res = await fetch(`${BASE_URL}/api/user/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone, password: pass })
+        });
         const data = await res.json();
-        if (data.success) { hideLoading(); alert('Signup successful — please login'); showLogin.click(); }
-        else { hideLoading(); alert(data.message || 'Signup failed'); }
-      } catch { hideLoading(); alert('Network error'); }
+
+        if (data.success) {
+          hideLoading();
+          alert('Signup successful — please login');
+          showLogin.click();
+        } else {
+          hideLoading();
+          alert(data.message || 'Signup failed');
+        }
+      } catch {
+        hideLoading();
+        alert('Network error');
+      }
     };
 
-    document.addEventListener('keydown', e => { if (e.key==='Enter') (signupForm.style.display!=='none'?btnSignup:btnLogin).click(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') (signupForm.style.display !== 'none' ? btnSignup : btnLogin).click();
+    });
   </script>
 </body>
 </html>
