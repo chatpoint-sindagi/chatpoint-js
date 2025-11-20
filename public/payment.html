@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout • ChatPoint</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #000000;
+      --card: rgba(10, 10, 15, 0.92);
+      --border: rgba(0, 255, 200, 0.18);
+      --primary: #00ff9d;
+      --secondary: #00f2ea;
+      --accent-glow: rgba(0, 255, 200, 0.5);
+      --text: #e0fffa;
+      --text-muted: #94c9c0;
+      --danger: #ff4d6d;
+      --radius: 28px;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px 16px;
+      background: radial-gradient(circle at 20% 80%, rgba(0,255,157,0.15), transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(0,242,234,0.12), transparent 50%);
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow), 0 0 40px rgba(0,255,157,0.15);
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, rgba(0,255,157,0.2), rgba(0,242,234,0.15));
+      padding: 24px;
+      text-align: center;
+      border-bottom: 1px dashed var(--border);
+    }
+    h2 {
+      font-size: 36px;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(0,255,157,0.5);
+    }
+
+    .form {
+      padding: 32px 28px;
+    }
+
+    label {
+      display: block;
+      margin: 20px 0 8px;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 15px;
+    }
+    input[type="text"], input[type="tel"] {
+      width: 100%;
+      padding: 18px 20px;
+      border-radius: 20px;
+      border: 2px solid rgba(0,255,157,0.25);
+      background: rgba(255,255,255,0.05);
+      color: white;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 30px var(--accent-glow);
+      background: rgba(0,255,157,0.08);
+    }
+
+    .payment-modes {
+      display: flex;
+      gap: 16px;
+      margin: 28px 0;
+      justify-content: center;
+    }
+    .mode {
+      flex: 1;
+      padding: 18px;
+      text-align: center;
+      border-radius: 20px;
+      background: rgba(0,255,157,0.1);
+      border: 2px solid rgba(0,255,157,0.3);
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 700;
+    }
+    .mode.selected {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: black;
+      transform: scale(1.05);
+      box-shadow: 0 0 40px var(--accent-glow);
+    }
+
+    .order-summary {
+      margin-top: 32px;
+      background: rgba(0,255,157,0.08);
+      border-radius: 20px;
+      padding: 20px;
+      border: 1px dashed var(--primary);
+    }
+    .shop-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 16px;
+      border-bottom: 1px dashed rgba(255,255,255,0.1);
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 700;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 2px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .free-delivery {
+      text-align: center;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(0,255,157,0.2), rgba(0,242,234,0.15));
+      border: 2px dashed var(--primary);
+      border-radius: 18px;
+      margin: 20px 0;
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--primary);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 0.9; } 50% { opacity: 1; } }
+
+    .btn {
+      margin-top: 32px;
+      width: 100%;
+      padding: 22px;
+      border: none;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 900;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: black;
+      box-shadow: 0 15px 40px rgba(0,255,157,0.5);
+      transition: var(--transition);
+    }
+    .btn:hover {
+      transform: translateY(-6px) scale(1.03);
+      box-shadow: 0 25px 60px rgba(0,255,157,0.7);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error { color: #ff6b6b; text-align: center; margin: 12px 0; font-weight: 600; }
+    .success { color: var(--primary); text-align: center; font-size: 20px; font-weight: 900; margin: 20px 0; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h2>Checkout</h2>
+    </header>
+
+    <div class="form" id="mainForm">
+      <div style="text-align:center;padding:80px;color:#666">
+        <i class="fas fa-spinner fa-spin fa-3x" style="color:var(--primary);opacity:0.3"></i>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CART_KEY = "chatpoint_cart";
+    const USER_KEY = "chatpoint_user";
+    const API_BASE = window.location.origin;
+
+    function getUser() {
+      try {
+        return JSON.parse(localStorage.getItem(USER_KEY));
+      } catch { return null; }
+    }
+
+    function getCart() {
+      try {
+        return JSON.parse(localStorage.getItem(CART_KEY)) || {};
+      } catch { return {}; }
+    }
+
+    function calculateTotals() {
+      const cart = getCart();
+      let itemsTotal = 0;
+      for (const shop in cart) {
+        for (const item in cart[shop]) {
+          itemsTotal += cart[shop][item].qty * cart[shop][item].price;
+        }
+      }
+      const delivery = itemsTotal >= 50 ? 0 : 30;
+      const grandTotal = itemsTotal + delivery;
+      return { itemsTotal, delivery, grandTotal, cart };
+    }
+
+    function render() {
+      const user = getUser();
+      if (!user?._id) {
+        document.getElementById("mainForm").innerHTML = `
+          <div style="text-align:center;padding:100px 20px;color:#888">
+            <h3>Please Login First</h3>
+            <a href="login.html" style="color:var(--primary);font-weight:700;font-size:18px">→ Go to Login</a>
+          </div>`;
+        return;
+      }
+
+      const { itemsTotal, delivery, grandTotal, cart } = calculateTotals();
+
+      if (Object.keys(cart).length === 0) {
+        document.getElementById("mainForm").innerHTML = `
+          <div style="text-align:center;padding:100px 20px;color:#888">
+            <i class="fas fa-shopping-bag fa-4x" style="opacity:0.3;margin-bottom:20px"></i>
+            <h3>Your cart is empty</h3>
+            <a href="index.html" style="color:var(--primary);font-weight:700">← Back to Menu</a>
+          </div>`;
+        return;
+      }
+
+      let cartHTML = '';
+      for (const shop in cart) {
+        let shopTotal = 0;
+        cartHTML += `<div class="shop-title"> ${shop}</div>`;
+        for (const name in cart[shop]) {
+          const it = cart[shop][name];
+          if (it.qty > 0) {
+            const total = it.price * it.qty;
+            shopTotal += total;
+            cartHTML += `<div class="item"><span>${name} × ${it.qty}</span><span>₹${total}</span></div>`;
+          }
+        }
+        cartHTML += `<div class="total-row"><span>Subtotal</span><span>₹${shopTotal}</span></div>`;
+      }
+
+      document.getElementById("mainForm").innerHTML = `
+        <label>Full Name</label>
+        <input type="text" id="name" value="${user.name || ''}" placeholder="Enter your name" required>
+
+        <label>Phone Number</label>
+        <input type="tel" id="phone" value="${user.phone || ''}" placeholder="10-digit mobile number" required>
+
+        <label>Delivery Address</label>
+        <input type="text" id="address" placeholder="House no., Building, Street, Area" required>
+        <input type="text" id="landmark" placeholder="Landmark (optional)" style="margin-top:8px">
+
+        <div class="payment-modes">
+          <div class="mode selected" onclick="selectMode(this)">Cash on Delivery</div>
+          <div class="mode" onclick="selectMode(this)">Pay Online <small>(Soon)</small></div>
+        </div>
+
+        ${itemsTotal >= 50 ? `<div class="free-delivery">FREE DELIVERY UNLOCKED!</div>` : ''}
+
+        <div class="order-summary">
+          ${cartHTML}
+          <div class="total-row"><span>Items Total</span><span>₹${itemsTotal}</span></div>
+          <div class="total-row"><span>Delivery Charge</span><span style="color:${delivery===0?'var(--primary)':'inherit'}">${delivery===0?'FREE': '₹'+delivery}</span></div>
+          <div class="total-row" style="font-size:22px;color:var(--primary);padding-top:16px;border-top:3px solid var(--primary)">
+            <span>Grand Total</span><span>₹${grandTotal}</span>
+          </div>
+        </div>
+
+        <div id="errorMsg" class="error"></div>
+        <div id="successMsg" class="success"></div>
+
+        <button class="btn" id="placeBtn">PLACE ORDER • ₹${grandTotal}</button>
+      `;
+
+      document.getElementById("placeBtn").onclick = placeOrder;
+    }
+
+    function selectMode(el) {
+      document.querySelectorAll(".mode").forEach(m => m.classList.remove("selected"));
+      el.classList.add("selected");
+      if (el.textContent.includes("Online")) {
+        setTimeout(() => alert("Online Payment Coming Soon!"), 300);
+      }
+    }
+
+    async function placeOrder() {
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const address = document.getElementById("address").value.trim();
+      const landmark = document.getElementById("landmark").value.trim();
+
+      if (!name || !phone || !address) return showError("Please fill all required fields");
+      if (!/^\d{10}$/.test(phone)) return showError("Enter valid 10-digit phone");
+
+      const { itemsTotal, delivery, grandTotal, cart } = calculateTotals();
+      const user = getUser();
+
+      const btn = document.getElementById("placeBtn");
+      btn.disabled = true;
+      btn.innerHTML = "Placing Order...";
+
+      try {
+        const res = await fetch(`${API_BASE}/api/save-order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user._id,
+            name, phone, address, landmark,
+            cart, itemsTotal, deliveryCharge: delivery, grandTotal,
+            paymentMode: "COD"
+          })
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          localStorage.removeItem(CART_KEY);
+          document.getElementById("successMsg").innerHTML = `Order Placed Successfully!<br><small>Order ID: #${data.orderId?.slice(-6).toUpperCase()}</small>`;
+          setTimeout(() => location.href = "orders.html", 2500);
+        } else {
+          throw new Error(data.message);
+        }
+      } catch (err) {
+        showError("Network error. Try again.");
+        btn.disabled = false;
+        btn.innerHTML = `PLACE ORDER • ₹${grandTotal}`;
+      }
+    }
+
+    function showError(msg) {
+      document.getElementById("errorMsg").textContent = msg;
+    }
+
+    window.onload = render;
+  </script>
+</body>
+</html>
